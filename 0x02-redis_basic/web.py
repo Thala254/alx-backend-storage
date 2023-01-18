@@ -2,22 +2,28 @@
 """
 web module
 """
+from time import sleep
+from typing import Callable
+import redis
+from functools import wraps
 import requests
-from redis import Redis
-rc = Redis()
-count = 0
 
 
+def url_count(method: Callable) -> Callable:
+    """Wrapper function to count frequency of url"""
+    @wraps(method)
+    def count_wrapper(*args):
+        """Callback function to be returned"""
+        cache = redis.Redis()
+        key = "count:" + args[0]
+        cache.incrby(key, 1)
+        cache.expire(key, 10)
+        return method
+    return count_wrapper
+
+
+@url_count
 def get_page(url: str) -> str:
-    """
-    get a page and cache value
-    """
-    rc.set(f"cached:{url}", count)
-    resp = requests.get(url)
-    rc.incr(f"count:{url}")
-    rc.setex(f"cached:{url}", 10, rc.get(f"cached:{url}"))
-    return resp.text
-
-
-if __name__ == "__main__":
-    get_page('http://slowwly.robertomurray.co.uk')
+    """Web cache and tracker"""
+    res = requests.get(url)
+    return res
