@@ -5,19 +5,16 @@ script that provides some stats about Nginx logs stored in MongoDB
 from pymongo import MongoClient
 
 
-def print_nginx_request_logs(nginx_collection):
+def print_nginx_request_logs(nginx):
     '''Prints stats about Nginx request logs.
     '''
-    print('{} logs'.format(nginx_collection.count_documents({})))
-    print('Methods:')
+    print(f'{nginx.count_documents({})} logs')
     methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
-    for method in methods:
-        req_count = len(list(nginx_collection.find({'method': method})))
-        print('\tmethod {}: {}'.format(method, req_count))
-    status_checks_count = len(list(
-        nginx_collection.find({'method': 'GET', 'path': '/status'})
-    ))
-    print('{} status check'.format(status_checks_count))
+    print('Methods:')
+    for req in methods:
+        print(f'\tmethod {req}: {nginx.count_documents({"method": req})}')
+    status_count = nginx.count_documents({"method": "GET", "path": "/status"})
+    print(f'{status_count} status check')
 
 
 def run():
