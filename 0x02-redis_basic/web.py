@@ -25,4 +25,4 @@ def url_count(method: Callable) -> Callable:
 def get_page(url: str) -> str:
     """Web cache and tracker"""
     res = requests.get(url)
-    return res
+    return res.text
