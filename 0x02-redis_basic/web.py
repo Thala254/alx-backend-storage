@@ -2,7 +2,6 @@
 """
 web module
 """
-from time import sleep
 from typing import Callable
 import redis
 from functools import wraps
@@ -18,7 +17,7 @@ def url_count(method: Callable) -> Callable:
         key = "count:" + args[0]
         cache.incrby(key, 1)
         cache.expire(key, 10)
-        return method(args)
+        return method(*args)
     return count_wrapper
 
 
