@@ -8,17 +8,23 @@ from functools import wraps
 import requests
 
 
+cache = redis.Redis()
+
+
 def url_count(method: Callable) -> Callable:
     """Wrapper function to count frequency of url"""
     @wraps(method)
-    def count_wrapper(*args):
+    def wrapper(url):
         """Callback function to be returned"""
-        cache = redis.Redis()
-        key = "count:" + args[0]
-        cache.incrby(key, 1)
-        cache.expire(key, 10)
-        return method(*args)
-    return count_wrapper
+        cache.incr(f'count:{url}')
+        cached_html = cache.get(f'cached:{url}')
+        if cached_html:
+            return cached_html.decode('utf-8')
+        html = method(url)
+        cache.setex(f'cached:{url}', 10, html)
+        return html
+
+    return wrapper
 
 
 @url_count
