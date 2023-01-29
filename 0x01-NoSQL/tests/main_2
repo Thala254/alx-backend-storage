@@ -1,0 +1,13 @@
+// craete database db_test_1 and empty the collection school and add 1 document
+use db_test_2
+db.school.deleteMany({})
+db.school.insert({ name: "HBTN" })
+db.school.insert({ name: "HBTN 1" })
+db.school.insert({ name: "HBTN 2" })
+db.school.insert({ name: "HBTN 3" })
+db.school.insert({ name: "HBTN 4" })
+db.school.insert({ name: "HBTN 5" })
+db.school.insert({ name: "HBTN 6" })
+db.school.insert({ name: "HBTN 7" })
+db.school.insert({ name: "HBTN 8" })
+db.school.insert({ name: "HBTN 9" })

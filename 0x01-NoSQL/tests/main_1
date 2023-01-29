@@ -1,0 +1,4 @@
+// craete database db_test_1 and empty the collection school and add 1 document
+use db_test_1
+db.school.deleteMany({})
+db.school.insert({ name: "HBTN" })
